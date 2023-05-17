@@ -7,6 +7,8 @@ services:
     volumes: ['.:/app']
     environment:
       - FLASK_DEBUG=1
+      - ENV=DEV
+      - OPENAI_API_KEY="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"
       # - CLIENT_SECRET=
 
 #  redis:

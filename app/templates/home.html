@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick News</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{{url_for('list_ip')}}">ABC Tools</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{url_for('list_ip')}}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="
+                {% if category == 'world' %}
+                {{url_for('list_ip',name='world')}}
+                {% else %}
+                {{url_for('list_ip',name='world')}}
+                {% endif %}
+
+                ">World</a>
+              </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="
+                    {% if category == 'business' %}
+                    {{url_for('list_ip',name='business')}}
+                    {% else %}
+                    {{url_for('list_ip',name='business')}}
+                    {% endif %}
+                    ">Business</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="
+                    {% if category == 'sports' %}
+                    {{url_for('list_ip',name='sports')}}
+                    {% else %}
+                    {{url_for('list_ip',name='sports')}}
+                    {% endif %}
+
+                    ">Sports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="
+                    {% if category == 'entertainment' %}
+                    {{url_for('list_ip',name='entertainment')}}
+                    {% else %}
+                    {{url_for('list_ip',name='entertainment')}}
+                    {% endif %}
+
+                    ">Entertainment</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="
+                    {% if category == 'technology' %}
+                    {{url_for('list_ip',name='technology')}}
+                    {% else %}
+                    {{url_for('list_ip',name='technology')}}
+                    {% endif %}
+
+                    ">Technology</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="
+                    {% if category == 'science' %}
+                    {{url_for('list_ip',name='science')}}
+                    {% else %}
+                    {{url_for('list_ip',name='science')}}
+                    {% endif %}
+
+                    ">Science</a>
+                </li>
+            </ul>
+            </div>
+        </div>
+        </nav>
+    <div class="container">
+        <h1>Chat Bot</h1>
+        <div id="log" class="centred"></div>
+
+        <form id="input">
+            <div class="input-group mb-3">
+                <input id="question", type="text" class="form-control" placeholder="Search for news" name="query">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+      const log = (text, color) => {
+        document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+      };
+
+      const socket = new WebSocket('ws://' + location.host + '/echo');
+      socket.addEventListener('message', ev => {
+        log('Bot ' + ev.data, 'blue');
+      });
+      document.getElementById('input').onsubmit = ev => {
+        ev.preventDefault();
+        const textField = document.getElementById('question');
+        log('User: ' + textField.value, 'red');
+        socket.send(textField.value);
+        textField.value = '';
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

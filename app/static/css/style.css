@@ -1,0 +1,151 @@
+.container{
+    margin-top: 50px;
+}
+.card{
+    margin-bottom: 20px;
+}
+.card-body{
+    padding: 20px;
+}
+.card-title{
+    font-size: 20px;
+    font-weight: bold;
+}
+.card-text{
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.btn{
+    background-color: #212529;
+    color: #ffffff;
+    border: none;
+    border-radius: 0;
+}
+.btn:hover{
+    background-color: #ffffff;
+    color: #212529;
+}
+.card-img-top{
+    height: 200px;
+    object-fit: cover;
+}
+.row{
+    display: flex;
+    flex-wrap: wrap;
+}
+.col-lg-3{
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+.col-sm{
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+@media (min-width: 768px){
+    .col-sm{
+        flex: 0 0 50%;
+        max-width: 50%; 
+    }
+}
+@media (min-width: 992px){
+    .col-sm{
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+h1{
+    text-align: center;
+}
+p{
+    text-align: center;
+}
+
+h1{
+    font-size: 50px;
+    font-weight: bold;
+    color: #212529;
+}
+p{
+    font-size: 20px;
+    font-weight: 500;
+    color: #212529;
+}
+.form-control{
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #212529;
+}
+.form-control:focus{
+    box-shadow: none;
+    border-bottom: 1px solid #212529;
+}
+.btn-outline-secondary{
+    border: none;
+    border-radius: 0;
+    background-color: #212529;
+    color: #ffffff;
+}
+.btn-outline-secondary:hover{
+    background-color: #ffffff;
+    color: #212529;
+}
+
+.input-group{
+    margin: 0 auto;
+    width: 50%;
+}
+
+@media (max-width: 768px){
+    .input-group{
+        width: 100%;
+    }
+}
+
+.row{
+    margin-top: 50px;
+}
+
+@media (max-width: 768px){
+    .navbar-nav{
+        flex-direction: column;
+    }
+}
+
+.navbar{
+    padding: 0 20px;
+}
+.navbar-brand{
+    font-size: 30px;
+    font-weight: bold;
+}
+.navbar-nav{
+    margin-left: auto;
+}
+.nav-link{
+    font-size: 15px;
+    font-weight: 500;
+    margin-left: 20px;
+}
+.nav-link:hover{
+    color: #ffffff;
+}
+.nav-link.active{
+    color: #ffffff;
+}
+.navbar-toggler{
+    border: none;
+}
+.navbar-toggler-icon{
+    font-size: 30px;
+}
+
+.centred {
+    height: 50px;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+}

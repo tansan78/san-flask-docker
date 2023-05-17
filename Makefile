@@ -3,7 +3,8 @@ APPLICATION_NAME ?= abctools
 GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
 GCP_PROJECT ?= sanbeacon-1161
-GCP_ARTIFACT_REG_HOST ?= us-west1-docker.pkg.dev
+GCP_REGION ?= us-west1
+GCP_ARTIFACT_REG_HOST ?= ${GCP_REGION}-docker.pkg.dev
 GCP_ARTIFACT_REG_DIR ?= abctools
 
 all:
@@ -27,17 +28,50 @@ clean:
 gcloud_auth:
 	gcloud auth configure-docker ${GCP_ARTIFACT_REG_HOST}
 
-build: gcloud_auth
-	docker build --tag ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:${GIT_HASH} .
+gcloud_ip:
+	gcloud compute addresses describe abctoolsip --global
 
-push: gcloud_auth
+build:
+	docker build --platform linux/amd64 --tag ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:${GIT_HASH} .
+
+push:
 	docker push ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:${GIT_HASH}
 
-release: gcloud_auth
+release_dryrun:
+	echo "docker pull ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:${GIT_HASH}"
+	echo "docker tag  ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:${GIT_HASH} \
+		   ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:latest"
+	echo "docker push ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:latest"
+
+release:
 	docker pull ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:${GIT_HASH}
 	docker tag  ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:${GIT_HASH} \
 		   ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:latest
 	docker push ${GCP_ARTIFACT_REG_HOST}/${GCP_PROJECT}/${GCP_ARTIFACT_REG_DIR}/${APPLICATION_NAME}:latest
 
+# need gcloud and gke-gcloud-auth-plugin (gcloud components install gke-gcloud-auth-plugin)
+gke_auth:
+	gcloud config set project ${GCP_PROJECT}
+	gcloud auth login
 
-.PHONY: all test clean build
+gke_cert:
+	kubectl apply -f ./gke/managed-cert.yaml
+
+gke_cluster:
+	gcloud container clusters create-auto ${APPLICATION_NAME}-cluster --region=${GCP_REGION}
+	gcloud container clusters get-credentials ${APPLICATION_NAME}-cluster --region=${GCP_REGION}
+
+gke_deploy:
+	gcloud container clusters get-credentials ${APPLICATION_NAME}-cluster --region=${GCP_REGION}
+	kubectl apply -f ./gke/deployment.yml
+
+gke_service:
+	gcloud container clusters get-credentials ${APPLICATION_NAME}-cluster --region=${GCP_REGION}
+	kubectl apply -f ./gke/service.yml
+
+gke_ingress:
+	gcloud container clusters get-credentials ${APPLICATION_NAME}-cluster --region=${GCP_REGION}
+	kubectl apply -f ./gke/managed-cert-ingress.yaml
+
+
+.PHONY: all test clean build gcloud_auth gke_config gke_deploy

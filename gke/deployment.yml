@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abctools-deployment
+  labels:
+    app: abctools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: abctools
+  template:
+    metadata:
+      labels:
+        app: abctools
+    spec:
+      containers:
+      - name: abctools
+        image: us-west1-docker.pkg.dev/sanbeacon-1161/abctools/abctools:latest
+        ports:
+        - containerPort: 8080

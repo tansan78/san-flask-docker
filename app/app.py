@@ -1,23 +1,45 @@
 import flask
 import socket
+import os
 
 from app_logging import logger
 import oauth_flow
 import google_resources
+from flask_sock import Sock
+import openai
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = flask.Flask(__name__)
+sock = Sock(app)
 
 SCHEMA_HOST = "http://localhost"
 
 @app.route("/")
 def index():
+    return flask.render_template('home.html')
+
+@sock.route('/echo')
+def echo(sock):
+    while True:
+        data = sock.receive()
+
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=data,
+            temperature=0.6,
+        )
+
+        sock.send(data)
+
+@app.route("/list_ip")
+def list_ip():
     try:
         host_name = socket.gethostname()
         host_ip = socket.gethostbyname(host_name)
-        return flask.render_template('index.html', hostname=host_name, ip=host_ip)
+        return flask.render_template('index.html', host_name, host_ip)
     except:
         return flask.render_template('error.html')
-
 
 @app.route("/list_subscriptions")
 def list_subscriptions():
